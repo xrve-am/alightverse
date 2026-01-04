@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alightverse</title>
+  <meta name="description" content="Alightverse — free Alight Motion packs with XML + QR." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="header__inner">
+      <div class="brand">
+        <div class="brand__dot" aria-hidden="true"></div>
+        <div>
+          <h1 class="brand__title">Alightverse</h1>
+          <p class="brand__subtitle">Free packs • XML + QR</p>
+        </div>
+      </div>
+
+      <div class="cta">
+        <a class="btn btn--ghost" href="https://youtube.com/@xrve" target="_blank" rel="noopener">YouTube</a>
+        <a class="btn btn--ghost" href="https://discord.gg/V5NcWhvugY" target="_blank" rel="noopener">Discord</a>
+      </div>
+    </div>
+
+    <div class="search">
+      <label class="sr-only" for="searchInput">Search packs</label>
+      <input
+        id="searchInput"
+        class="search__input"
+        type="search"
+        placeholder="Search packs (e.g., watermark, shake, cc, text)…"
+        autocomplete="off"
+      />
+      <button id="clearBtn" class="search__clear" type="button" aria-label="Clear search">✕</button>
+    </div>
+
+    <div class="meta">
+      <span id="countText" class="meta__count">0 packs</span>
+      <span class="meta__hint">Tap Open Pack to get XML + QR</span>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="grid" id="packGrid" aria-live="polite"></section>
+
+    <div id="emptyState" class="empty" hidden>
+      <p class="empty__title">No matches</p>
+      <p class="empty__text">Try a different keyword.</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 Alightverse</p>
+    <p>Contact: xrve.am@gmail.com</p>
+  </footer>
+
+  <script>
+    // =========================
+    // ✅ ONLY EDIT THIS SECTION
+    // =========================
+    // For each pack:
+    // - driveFolder: paste the GOOGLE DRIVE FOLDER LINK that contains BOTH the XML + QR
+    // Example folder link format:
+    // https://drive.google.com/drive/folders/XXXXXXXXXXXXXX?usp=sharing
+    const PACKS = [
+      {
+        id: 1,
+        title: "Alight Motion | Watermark Preset Pack (QR + XML)",
+        keywords: ["watermark", "preset", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1GZjXx6xfgHQA3_9k_YfG6ntEXh9NC5Go?usp=sharing",
+        thumb: "watermark.jpg"
+      },
+      {
+        id: 2,
+        title: "Alight Motion 10K Giveaway Pack (shakes, effects, cc’s) + more",
+        keywords: ["10k", "giveaway", "shakes", "effects", "cc"],
+        driveFolder: "https://drive.google.com/drive/folders/1cOJ9GVsnbWgnW9nAsQ2ZHA3dC-bQEJKD?usp=sharing",
+        thumb: "10k.jpg"
+      },
+      {
+        id: 3,
+        title: "BEST EDITING PACK ON ALIGHT MOTION (shakes, effects, ccs, transitions, text, overlays)",
+        keywords: ["best", "editing", "shakes", "effects", "cc", "transitions", "text", "overlays"],
+        driveFolder: "https://drive.google.com/drive/folders/12Cf2bJhO1lAmtuQvU948ttRVwPHXEaOc?usp=sharing",
+        thumb: "best.jpg"
+      },
+      
+      {
+        id: 5,
+        title: "Alight Motion: Anitok + WIS Pack (shakes, cc, effects, text)",
+        keywords: ["anitok", "wis", "shakes", "cc", "effects", "text"],
+        driveFolder: "https://drive.google.com/drive/folders/1Ia1Qf9KuaHr96PllpXbkVah9_Jc_F_2W?usp=sharing",
+        thumb: "anitok.jpg"
+      },
+      {
+        id: 6,
+        title: "TEXT ANIMATION PACK on Alight Motion [QR + XML]",
+        keywords: ["text", "animation", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1LnGxQ25Dww_hWIXktPlHbA-Q57miaBwG?usp=sharing",
+        thumb: "textanimation.jpg"
+      },
+      {
+        id: 7,
+        title: "The BEST SHAKE PACK on Alight Motion (QR + XML + LINK)",
+        keywords: ["best", "shake", "qr", "xml", "link"],
+        driveFolder: "https://drive.google.com/drive/folders/1Dmd6mH96gZJAFACF4Ot5kv-LYALXAf2O?usp=sharing",
+        thumb: "bestshake.jpg"
+      },
+      {
+        id: 8,
+        title: "Alight Motion | Watermark Preset Pack (QR + XML)",
+        keywords: ["watermark", "preset", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1GZjXx6xfgHQA3_9k_YfG6ntEXh9NC5Go?usp=sharing",
+        thumb: "watermarkpreset.jpg"
+      },
+      {
+        id: 9,
+        title: "Alight Motion | Transition Pack [QR + XML]",
+        keywords: ["transition", "transitions", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1RUGAj8ulXQHD879WVCKyjcDv_1q_Iv5m?usp=sharing",
+        thumb: "transition.jpg"
+      },
+      {
+        id: 10,
+        title: "The Best EFFECT PACK on Alight Motion [QR + XML]",
+        keywords: ["effect", "effects", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1vVsKvtD4Wr4mob_2K59uAiG6sd4u6Lfp?usp=sharing",
+        thumb: "besteffect.jpg"
+      },
+      {
+        id: 11,
+        title: "Text Animation Pack Like After Effects in Alight Motion [QR + XML]",
+        keywords: ["text", "animation", "after effects", "ae", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1LnGxQ25Dww_hWIXktPlHbA-Q57miaBwG?usp=sharing",
+        thumb: "textanimations.jpg"
+      },
+      {
+        id: 12,
+        title: "YOUTH SHAKE PACK on Alight Motion [QR + XML]",
+        keywords: ["youth", "shake", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1--xg56nCHAdy6_K0hOiy3WfWVlEdWP5g?usp=sharing",
+        thumb: "youthshake.jpg"
+      },
+      {
+        id: 13,
+        title: "VSP SHAKE PACK on Alight Motion [QR+XML]",
+        keywords: ["vsp", "shake", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/16OWNnGvVAP9-sejXNBosX42X72Wsk_3p?usp=sharing",
+        thumb: "vspshake.jpg"
+      },
+      {
+        id: 14,
+        title: "SPAM SHAKE PACK on Alight Motion [QR + XML]",
+        keywords: ["spam", "shake", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1CE-W3iOgQQesD8DlpYXZlmv9uUciixC7?usp=sharing",
+        thumb: "spamshake.jpg"
+      },
+      {
+
+        id: 16,
+        title: "VSP PACK on Alight Motion (shakes ,effects, ccs)",
+        keywords: ["vsp", "shakes", "effects", "cc"],
+        driveFolder: "https://drive.google.com/drive/folders/16OWNnGvVAP9-sejXNBosX42X72Wsk_3p?usp=sharing",
+        thumb: "vsp.jpg"
+      },
+
+      {
+        id: 18,
+        title: "Alight Motion | Effect Pack",
+        keywords: ["effect", "effects"],
+        driveFolder: "https://drive.google.com/drive/folders/1EJlHYttt9GAZAetffx2cMcnKhCwP9uA2?usp=sharing",
+        thumb: "effect.jpg"
+      },
+      {
+        id: 19,
+        title: "Alight Motion | Text Effect Preset Pack (QR + XML)",
+        keywords: ["text", "effect", "preset", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1GSY5JyNFAs3XToskPHHe0rUYH5YLzW1D?usp=sharing",
+        thumb: "texteffect.jpg"
+      },
+
+      {
+        id: 21,
+        title: "Text Shake Pack on Alight Motion [QR + XML]",
+        keywords: ["text", "shake", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1DE_7bXtqUzNuGvNcvuCyPgrB3nBDpgdO?usp=sharing",
+        thumb: "textshake.jpg"
+      },
+      
+
+  
+      {
+        id: 23,
+        title: "Ghost Effect PACK on Alight Motion [QR + XML]",
+        keywords: ["ghost", "effect", "qr", "xml"],
+        driveFolder: "https://drive.google.com/drive/folders/1U1eurWUfsvWbSBFlA3XN9fUjp8MxeScj?usp=sharing",
+        thumb: "ghost.jpg"
+      },
+      {
+        id: 24,
+        title: "Alight Motion: XY Shake Pack [QR + XML + ALIGHT LINK]",
+        keywords: ["xy", "shake", "qr", "xml", "alight link"],
+        driveFolder: "https://drive.google.com/drive/folders/1dPLCu-pGqAVFuVqlIG1tZcJFLZkAW0M9?usp=sharing",
+        thumb: "xy.jpg"
+      },
+      {
+        id: 25,
+        title: "Alight Motion | Aggressive Shake Pack [QR + XML + LINK]",
+        keywords: ["aggressive", "shake", "qr", "xml", "link"],
+        driveFolder: "https://drive.google.com/drive/folders/1TLkFWNu9jsGxDIkf8bDl8OwdFUAHABge?usp=sharing",
+        thumb: "agressive.jpg"
+      }
+    ];
+
+    // =========================
+    // RENDER + SEARCH (no need to edit)
+    // =========================
+    const grid = document.getElementById("packGrid");
+    const searchInput = document.getElementById("searchInput");
+    const clearBtn = document.getElementById("clearBtn");
+    const emptyState = document.getElementById("emptyState");
+    const countText = document.getElementById("countText");
+
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+
+    function card(pack) {
+      const searchBlob = (pack.title + " " + (pack.keywords || []).join(" ")).toLowerCase();
+      const folder = pack.driveFolder;
+
+      return `
+        <article class="card reveal" data-search="${esc(searchBlob)}">
+          <div class="card__tap">
+            <div class="card__imgWrap">
+              <img class="card__img" src="${esc(pack.thumb)}" alt="${esc(pack.title)} thumbnail" loading="lazy">
+            </div>
+            <div class="card__body">
+              <h3 class="card__title">${esc(pack.title)}</h3>
+              <p class="card__sub">Contains: XML + QR</p>
+
+                <div class="card__actions">
+                  <a class="btn btn--primary" href="${esc(folder)}" target="_blank" rel="noopener">
+                    Open Pack (XML + QR)
+                  </a>
+                </div>
+
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function render(list) {
+      grid.innerHTML = list.map(card).join("");
+      countText.textContent = `${list.length} pack${list.length === 1 ? "" : "s"}`;
+      emptyState.hidden = list.length !== 0;
+      setupReveal();
+    }
+
+    function filter(q) {
+      const query = q.trim().toLowerCase();
+      if (!query) return PACKS;
+
+      return PACKS.filter(p => {
+        const blob = (p.title + " " + (p.keywords || []).join(" ")).toLowerCase();
+        return blob.includes(query);
+      });
+    }
+
+    searchInput.addEventListener("input", () => render(filter(searchInput.value)));
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      searchInput.focus();
+      render(PACKS);
+    });
+
+    // =========================
+    // REVEAL ANIMATION (no need to edit)
+    // =========================
+    let obs = null;
+
+    function setupReveal() {
+      if (obs) obs.disconnect();
+
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReduced) {
+        document.querySelectorAll(".reveal").forEach(el => el.classList.add("is-visible"));
+        return;
+      }
+
+      obs = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            obs.unobserve(e.target);
+          }
+        }
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+    }
+
+    render(PACKS);
+  </script>
+</body>
+</html>
